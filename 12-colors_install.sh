@@ -5,16 +5,16 @@ Y="\e[33m"
 W="\e[0m"
 
 if [ $(id -u) -ne 0 ]; then
-    echo -e "${R}You need root access to run this script.${W}"
+    echo -e "$R You need root access to run this script. $W"
     exit 1
 fi
 
 validate_install() {
     if [ $1 -ne 0 ]; then
-        echo "$R Software $2 installation was failure.$W"
+        echo -e "$R Software $2 installation was failure.$W"
         exit 1
     else
-        echo "$G Software $2 installation was successful.$W"
+        echo -e "$G Software $2 installation was successful.$W"
     fi
 }
 
@@ -24,7 +24,7 @@ if [ $? -ne 0 ]; then
     dnf install mysql -y
     validate_install $? "MySQL"
 else
-    echo -e "$G MySQL is already installed.${W}"
+    echo -e "$G MySQL is already installed.$W"
 fi
 
 dnf list installed nginx
