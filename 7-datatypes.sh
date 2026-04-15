@@ -4,7 +4,7 @@
 
 no1=10
 no2=20
-$sum=$((no1+no2))
+sum=$((no1+no2))
 echo "The sum of $no1 and $no2 is: ${sum}"
 
 name="John Doe"
