@@ -5,7 +5,7 @@
 USERID=$(id -u)
 if [ $USERID -ne 0 ]; then
     echo "You need root access to run this script."
-    exit 1
+    #exit 1
 fi
 
 dnf install python3 -y
