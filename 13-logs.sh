@@ -11,7 +11,7 @@ if [ $(id -u) -ne 0 ]; then
 fi
 
 LOGS_FOLDER="/var/log/shell-script"
-SCRIPT_NAME=$( echo $0 | cut -d "." -f1 )
+SCRIPT_NAME=$( echo $0 | cut -d "." -f1 ) #$0 - it will give script name
 LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log" # /var/log/shell-script/16-logs.log
 
 mkdir -p $LOGS_FOLDER
@@ -19,7 +19,7 @@ echo "Script started executed at: $(date)" | tee -a $LOG_FILE
 #tee -a : it shows the output on the terminal and also appends it to the log file
 
 validate_install() {
-    if [ $1 -ne 0 ]; then
+    if [ $1 -ne 0 ]; then # $1 - value to this passed at runtime i.e during script execution
         echo -e "$R Software $2 installation was failure.$W"
         exit 1
     else

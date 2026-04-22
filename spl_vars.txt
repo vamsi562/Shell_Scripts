@@ -1,0 +1,15 @@
+Special variables available in shell and their usage
+
+$@ - using this will give all variable values
+$* - using this will give all variable values
+
+$? - return exit status of last executed command i.e success -0 & other failure
+
+$0 - it will give script name
+
+$PWD - current working directory
+
+$$ - it will  give process instance id
+$! - it will give PID of last command in back ground
+$# - check no of arguments passed to script
+
