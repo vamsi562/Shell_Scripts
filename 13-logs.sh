@@ -31,7 +31,7 @@ dnf list installed mysql &>>$LOG_FILE # &>> : it appends both stdout and stderr 
 # Install if it is not found in the list of installed packages
 if [ $? -ne 0 ]; then
     dnf install mysql -y &>>$LOG_FILE
-    VALIDATE $? "MySQL"
+    validate_install $? "MySQL"
 else
     echo -e "MySQL already exist ... $Y SKIPPING $N" | tee -a $LOG_FILE
 fi
@@ -39,7 +39,7 @@ fi
 dnf list installed nginx &>>$LOG_FILE
 if [ $? -ne 0 ]; then
     dnf install nginx -y &>>$LOG_FILE
-    VALIDATE $? "Nginx"
+    validate_install $? "Nginx"
 else
     echo -e "Nginx already exist ... $Y SKIPPING $N" | tee -a $LOG_FILE
 fi
@@ -47,7 +47,7 @@ fi
 dnf list installed python3 &>>$LOG_FILE
 if [ $? -ne 0 ]; then
     dnf install python3 -y &>>$LOG_FILE
-    VALIDATE $? "python3"
+    validate_install $? "Python3"
 else
     echo -e "Python3 already exist ... $Y SKIPPING $N" | tee -a $LOG_FILE
 fi
