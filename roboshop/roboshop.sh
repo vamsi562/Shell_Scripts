@@ -17,7 +17,7 @@ for i in $@; do
         --security-group-ids "$SECURITY_GROUP_ID" \
         --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$TAG_NAME}]" \
         --query 'Instances[0].InstanceId' \
-        --output text)
+    --output text)
     # Get Private IP
     if [ $i != "frontend" ]; then
         IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PrivateIpAddress' --output text)
@@ -31,7 +31,8 @@ for i in $@; do
     echo "Creating Route53 record for $i with IP $IP..."
     aws route53 change-resource-record-sets \
     --hosted-zone-id "$Zone_ID" \
-    --change-batch "{
+    --change-batch '
+    {
         "Comment": "Updating record set"
         ,"Changes": [{
         "Action"              : "UPSERT"
@@ -44,5 +45,6 @@ for i in $@; do
             }]
         }
         }]
-    }"
+    }
+    '
 done
