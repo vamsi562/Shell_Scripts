@@ -2,37 +2,30 @@
 
 # this script is used to install servers for implementing roboshop application
 
-AMI_ID="ami-0220d79f3f480ecf5"
-INSTANCE_TYPE="t3.micro"
-SECURITY_GROUP_ID="sg-03d2125bf6ee50b73"
-Zone_ID="Z0443476BR0YLVN9TX31"
-Domain_Name="chikoo.fun"
+#set -euo pipefail
 
-for i in $@; do
-    TAG_NAME="roboshop-$i"
-    echo "Creating EC2 instance for $i with tag $TAG_NAME..."
-    Instance_ID=$(aws ec2 run-instances \
-        --image-id "$AMI_ID" \
-        --instance-type "$INSTANCE_TYPE" \
-        --security-group-ids "$SECURITY_GROUP_ID" \
-        --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$TAG_NAME}]" \
-        --query 'Instances[0].InstanceId' \
-    --output text)
+AMI_ID="ami-0220d79f3f480ecf5"
+SG_ID="sg-03d2125bf6ee50b73" # replace with your SG ID
+ZONE_ID="Z0443476BR0YLVN9TX31" # replace with your ID
+DOMAIN_NAME="chikoo.fun"
+
+for instance in $@ # mongodb redis mysql
+do
+    INSTANCE_ID=$(aws ec2 run-instances --image-id $AMI_ID --instance-type t3.micro --security-group-ids $SG_ID --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$instance}]" --query 'Instances[0].InstanceId' --output text)
+
     # Get Private IP
-    if [ $i != "frontend" ]; then
+    if [ $instance != "frontend" ]; then
         IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PrivateIpAddress' --output text)
-        RECORD_NAME="$i.$Domain_Name" # mongodb.chikoo.fun
-        echo $RECORD_NAME
+        RECORD_NAME="$instance.$DOMAIN_NAME" # mongodb.daws86s.fun
     else
         IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
-        RECORD_NAME="$Domain_Name" # chikoo.fun
-        echo $RECORD_NAME
+        RECORD_NAME="$DOMAIN_NAME" # daws86s.fun
     fi
-    echo "$i: $IP"
-    # Create Route53 Record
-    echo "Creating Route53 record for $i with IP $IP..."
+
+    echo "$instance: $IP"
+
     aws route53 change-resource-record-sets \
-    --hosted-zone-id "$Zone_ID" \
+    --hosted-zone-id $ZONE_ID \
     --change-batch '
     {
         "Comment": "Updating record set"
