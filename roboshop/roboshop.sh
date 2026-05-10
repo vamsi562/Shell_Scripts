@@ -22,9 +22,11 @@ for i in $@; do
     if [ $i != "frontend" ]; then
         IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PrivateIpAddress' --output text)
         RECORD_NAME="$i.$DOMAIN_NAME" # mongodb.chikoo.fun
+        echo $RECORD_NAME
     else
         IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
         RECORD_NAME="$DOMAIN_NAME" # chikoo.fun
+        echo $RECORD_NAME
     fi
     echo "$i: $IP"
     # Create Route53 Record
