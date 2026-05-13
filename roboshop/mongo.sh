@@ -1,4 +1,5 @@
 #!/bin/bash
+trap '"echo -e script failed at line no: $LINENO, command: $BASH_COMMAND"' ERR
 
 USERID=$(id -u)
 R="\e[31m"
