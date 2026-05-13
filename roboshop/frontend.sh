@@ -59,6 +59,8 @@ cd /usr/share/nginx/html
 unzip /tmp/frontend.zip &>>$LOG_FILE
 VALIDATE $? "Extracting frontend code"
 
+cp $SCRIPT_DIR/nginx.conf /etc/nginx/default.d/nginx.conf &>>$LOG_FILE
+VALIDATE $? "Copying nginx configuration file"
 
 systemctl restart nginx &>>$LOG_FILE
 VALIDATE $? "Restarting nginx service"
@@ -66,5 +68,3 @@ VALIDATE $? "Restarting nginx service"
 END_TIME=$(date +%s)
 TOTAL_TIME=$(( $END_TIME - $START_TIME ))
 echo -e "Script executed in: $Y $TOTAL_TIME Seconds $N"
-
-
