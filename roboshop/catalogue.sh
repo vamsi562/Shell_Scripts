@@ -11,7 +11,7 @@ LOGS_FOLDER="/var/log/shell-roboshop"
 SCRIPT_NAME=$( echo $0 | cut -d "." -f1 )
 LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log"
 MONGODB_HOST="mongodb.chikoo.fun"
-
+SCRIPT_DIR=$PWD
 mkdir -p $LOGS_FOLDER
 echo "Script started executed at: $(date)" | tee -a $LOG_FILE
 
@@ -38,8 +38,13 @@ VALIDATE $? "Enable NodeJS 20 module"
 dnf install nodejs -y &>>$LOG_FILE
 VALIDATE $? "Installing NodeJS"
 
-useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
-VALIDATE $? "Adding roboshop user"
+id roboshop &>>$LOG_FILE
+if [ $? -ne 0 ]; then
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
+    VALIDATE $? "Adding roboshop user"
+else
+    echo -e "roboshop user already exists ... $Y SKIPPING $N"
+fi
 
 mkdir -p /app
 
@@ -50,7 +55,7 @@ unzip /tmp/catalogue.zip
 npm install &>>$LOG_FILE
 VALIDATE $? "Installing NodeJS dependencies"
 
-cp catalogue.service /etc/systemd/system/catalogue.service 
+cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service 
 VALIDATE $? "Copying catalogue systemd file"
 
 systemctl daemon-reload &>>$LOG_FILE
@@ -62,7 +67,7 @@ VALIDATE $? "Enabling catalogue service"
 systemctl start catalogue &>>$LOG_FILE
 VALIDATE $? "Starting catalogue service"
 
-cp mongo.repo /etc/yum.repos.d/mongo.repo
+cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
 VALIDATE $? "Adding Mongo repo"
 
 dnf install mongodb-mongosh -y &>>$LOG_FILE
