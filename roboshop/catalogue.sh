@@ -48,9 +48,11 @@ fi
 
 mkdir -p /app
 
-curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip 
+curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$LOG_FILE
+VALIDATE $? "Downloading catalogue code"
 cd /app 
-unzip /tmp/catalogue.zip
+unzip /tmp/catalogue.zip &>>$LOG_FILE
+VALIDATE $? "Extracting catalogue code"
 
 npm install &>>$LOG_FILE
 VALIDATE $? "Installing NodeJS dependencies"
